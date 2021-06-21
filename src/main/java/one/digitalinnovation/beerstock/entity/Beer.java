@@ -1,16 +1,20 @@
 package one.digitalinnovation.beerstock.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import one.digitalinnovation.beerstock.enums.BeerType;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
+@Data
+@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Beer implements Serializable {
+public class Beer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

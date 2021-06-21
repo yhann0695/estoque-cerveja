@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface BeerRepository extends JpaRepository<Beer, Long> {
 
-    Optional<Beer> findByNomeStartingWithIgnoreCase(String nome);
+    Optional<Beer> findByNomeIgnoreCase(String nome);
 }

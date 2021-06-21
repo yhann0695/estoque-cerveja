@@ -30,7 +30,7 @@ public class BeerService {
     }
 
     public BeerDTO findByName(String name) throws BeerNotFoundException {
-        Beer foundBeer = beerRepository.findByNomeStartingWithIgnoreCase(name)
+        Beer foundBeer = beerRepository.findByNomeIgnoreCase(name)
                 .orElseThrow(() -> new BeerNotFoundException(name));
         return beerMapper.toDTO(foundBeer);
     }
@@ -49,14 +49,14 @@ public class BeerService {
     }
 
     private void verifyIfIsAlreadyRegistered(String nome) throws BeerAlreadyRegisteredException {
-        Optional<Beer> optSaveBeer = beerRepository.findByNomeStartingWithIgnoreCase(nome);
+        Optional<Beer> optSaveBeer = beerRepository.findByNomeIgnoreCase(nome);
         if(optSaveBeer.isPresent()) {
             throw new BeerAlreadyRegisteredException(nome);
         }
     }
 
-    private Beer verifyIfExists(Long id) throws BeerNotFoundIdException {
-        return beerRepository.findById(id)
+    private void verifyIfExists(Long id) throws BeerNotFoundIdException {
+        beerRepository.findById(id)
                 .orElseThrow(() -> new BeerNotFoundIdException(id));
     }
 }
