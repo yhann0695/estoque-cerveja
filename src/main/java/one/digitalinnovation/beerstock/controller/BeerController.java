@@ -1,10 +1,12 @@
 package one.digitalinnovation.beerstock.controller;
 
 import one.digitalinnovation.beerstock.dto.BeerDTO;
+import one.digitalinnovation.beerstock.dto.QuantityDTO;
 import one.digitalinnovation.beerstock.entity.Beer;
 import one.digitalinnovation.beerstock.exception.BeerAlreadyRegisteredException;
 import one.digitalinnovation.beerstock.exception.BeerNotFoundException;
 import one.digitalinnovation.beerstock.exception.BeerNotFoundIdException;
+import one.digitalinnovation.beerstock.exception.BeerStockExceededException;
 import one.digitalinnovation.beerstock.service.BeerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,5 +44,11 @@ public class BeerController {
     @GetMapping("/{name}")
     public ResponseEntity<BeerDTO> findByName(@PathVariable String name) throws BeerNotFoundException {
         return ResponseEntity.ok(beerService.findByName(name));
+    }
+
+    @PatchMapping("/{id}/increment")
+    public ResponseEntity<BeerDTO> increment(@PathVariable Long id, @RequestBody @Valid QuantityDTO quantityDTO)
+            throws BeerNotFoundIdException, BeerStockExceededException {
+        return ResponseEntity.ok(beerService.increment(id, quantityDTO.getQuantity()));
     }
 }

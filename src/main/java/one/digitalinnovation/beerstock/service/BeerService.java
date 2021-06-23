@@ -5,6 +5,7 @@ import one.digitalinnovation.beerstock.entity.Beer;
 import one.digitalinnovation.beerstock.exception.BeerAlreadyRegisteredException;
 import one.digitalinnovation.beerstock.exception.BeerNotFoundException;
 import one.digitalinnovation.beerstock.exception.BeerNotFoundIdException;
+import one.digitalinnovation.beerstock.exception.BeerStockExceededException;
 import one.digitalinnovation.beerstock.mapper.BeerMapper;
 import one.digitalinnovation.beerstock.repository.BeerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +56,19 @@ public class BeerService {
         }
     }
 
-    private void verifyIfExists(Long id) throws BeerNotFoundIdException {
-        beerRepository.findById(id)
+    private Beer verifyIfExists(Long id) throws BeerNotFoundIdException {
+        return beerRepository.findById(id)
                 .orElseThrow(() -> new BeerNotFoundIdException(id));
+    }
+
+    public BeerDTO increment(Long id, int quantityToIncrement) throws BeerNotFoundIdException, BeerStockExceededException {
+        Beer beerToIncrementStock = verifyIfExists(id);
+        int quantityAfterIncrement = quantityToIncrement + beerToIncrementStock.getQuantity();
+        if(quantityAfterIncrement <= beerToIncrementStock.getMax()) {
+            beerToIncrementStock.setQuantity(beerToIncrementStock.getQuantity() + quantityToIncrement);
+            Beer incrementBeerStock = beerRepository.save(beerToIncrementStock);
+            return beerMapper.toDTO(incrementBeerStock);
+        }
+        throw new BeerStockExceededException(id, quantityToIncrement);
     }
 }
